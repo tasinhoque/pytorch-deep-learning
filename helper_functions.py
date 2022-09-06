@@ -3,35 +3,29 @@ A series of helper functions used throughout the course.
 
 If a function gets defined once and could be used over and over, it'll go in here.
 """
-import torch
-import matplotlib.pyplot as plt
-import numpy as np
-
-from torch import nn
-
-import os
-import zipfile
-
-from pathlib import Path
-
-import requests
-
 # Walk through an image classification directory and find out how many files (images)
 # are in each subdirectory.
 import os
+import zipfile
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+import requests
+import torch
+from torch import nn
 
 
 def walk_through_dir(dir_path):
-    """
-    Walks through dir_path returning its contents.
-    Args:
-    dir_path (str): target directory
+    """Walk through dir_path returning its contents.
 
-    Returns:
-    A print out of:
-      number of subdiretories in dir_path
-      number of images (files) in each subdirectory
-      name of each subdirectory
+    Prints out:
+    - Number of subdiretories in dir_path.
+    - Number of images (files) in each subdirectory.
+    - Name of each subdirectory.
+
+    Args:
+        dir_path (str): Target directory.
     """
     for dirpath, dirnames, filenames in os.walk(dir_path):
         print(
@@ -40,7 +34,7 @@ def walk_through_dir(dir_path):
 
 
 def plot_decision_boundary(model: torch.nn.Module, X: torch.Tensor, y: torch.Tensor):
-    """Plots decision boundaries of model predicting on X in comparison to y.
+    """Plot decision boundaries of model predicting on X in comparison to y.
 
     Source - https://madewithml.com/courses/foundations/neural-networks/ (with modifications)
     """
@@ -79,9 +73,7 @@ def plot_decision_boundary(model: torch.nn.Module, X: torch.Tensor, y: torch.Ten
 def plot_predictions(
     train_data, train_labels, test_data, test_labels, predictions=None
 ):
-    """
-    Plots linear training data and test data and compares predictions.
-    """
+    """Plot linear training data and test data and compares predictions."""
     plt.figure(figsize=(10, 7))
 
     # Plot training data in blue
@@ -100,14 +92,14 @@ def plot_predictions(
 
 # Calculate accuracy (a classification metric)
 def accuracy_fn(y_true, y_pred):
-    """Calculates accuracy between truth labels and predictions.
+    """Calculate accuracy between truth labels and predictions.
 
     Args:
         y_true (torch.Tensor): Truth labels for predictions.
         y_pred (torch.Tensor): Predictions to be compared to predictions.
 
     Returns:
-        [torch.float]: Accuracy value between y_true and y_pred, e.g. 78.45
+        torch.float: Accuracy value between y_true and y_pred, e.g. 78.45.
     """
     correct = torch.eq(y_true, y_pred).sum().item()
     acc = (correct / len(y_pred)) * 100
@@ -115,7 +107,7 @@ def accuracy_fn(y_true, y_pred):
 
 
 def print_train_time(start, end, device=None):
-    """Prints difference between start and end time.
+    """Print difference between start and end time.
 
     Args:
         start (float): Start time of computation (preferred in timeit format).
@@ -123,7 +115,7 @@ def print_train_time(start, end, device=None):
         device ([type], optional): Device that compute is running on. Defaults to None.
 
     Returns:
-        float: time between start and end in seconds (higher is longer).
+        float: Time between start and end in seconds (higher is longer).
     """
     total_time = end - start
     print(f"\nTrain time on {device}: {total_time:.3f} seconds")
@@ -132,14 +124,17 @@ def print_train_time(start, end, device=None):
 
 # Plot loss curves of a model
 def plot_loss_curves(results):
-    """Plots training curves of a results dictionary.
+    """Plot training curves of a results dictionary.
 
     Args:
-        results (dict): dictionary containing list of values, e.g.
-            {"train_loss": [...],
-             "train_acc": [...],
-             "test_loss": [...],
-             "test_acc": [...]}
+        results (dict): dictionary containing list of values, e.g.::
+
+            {
+                "train_loss": [...],
+                "train_acc": [...],
+                "test_loss": [...],
+                "test_acc": [...]
+            }
     """
     loss = results["train_loss"]
     test_loss = results["test_loss"]
@@ -171,6 +166,7 @@ def plot_loss_curves(results):
 # Pred and plot image function from notebook 04
 # See creation: https://www.learnpytorch.io/04_pytorch_custom_datasets/#113-putting-custom-image-prediction-together-building-a-function
 from typing import List
+
 import torchvision
 
 
@@ -181,24 +177,26 @@ def pred_and_plot_image(
     transform=None,
     device: torch.device = "cuda" if torch.cuda.is_available() else "cpu",
 ):
-    """Makes a prediction on a target image with a trained model and plots the image.
+    """Make a prediction on a target image with a trained model and plots the image.
+
+    This function shows the model prediction as title.
 
     Args:
-        model (torch.nn.Module): trained PyTorch image classification model.
-        image_path (str): filepath to target image.
-        class_names (List[str], optional): different class names for target image. Defaults to None.
-        transform (_type_, optional): transform of target image. Defaults to None.
-        device (torch.device, optional): target device to compute on. Defaults to "cuda" if torch.cuda.is_available() else "cpu".
+        model (torch.nn.Module): Trained PyTorch image classification model.
+        image_path (str): Filepath to target image.
+        class_names (List[str], optional): Different class names for target image. Defaults to None.
+        transform (_type_, optional): Transform of target image. Defaults to None.
+        device (torch.device, optional): Target device to compute on. Defaults to "cuda" if torch.cuda.is_available() else "cpu".
 
-    Returns:
-        Matplotlib plot of target image and model prediction as title.
+    Examples::
 
-    Example usage:
-        pred_and_plot_image(model=model,
-                            image="some_image.jpeg",
-                            class_names=["class_1", "class_2", "class_3"],
-                            transform=torchvision.transforms.ToTensor(),
-                            device=device)
+        pred_and_plot_image(
+            model=model,
+            image="some_image.jpeg",
+            class_names=["class_1", "class_2", "class_3"],
+            transform=torchvision.transforms.ToTensor(),
+            device=device
+        )
     """
 
     # 1. Load in image and convert the tensor values to float32
@@ -242,7 +240,7 @@ def pred_and_plot_image(
 
 
 def set_seeds(seed: int = 42):
-    """Sets random sets for torch operations.
+    """Set random sets for torch operations.
 
     Args:
         seed (int, optional): Random seed to set. Defaults to 42.
@@ -254,7 +252,7 @@ def set_seeds(seed: int = 42):
 
 
 def download_data(source: str, destination: str, remove_source: bool = True) -> Path:
-    """Downloads a zipped dataset from source and unzips to destination.
+    """Download a zipped dataset from source and unzips to destination.
 
     Args:
         source (str): A link to a zipped file containing data.
@@ -262,11 +260,14 @@ def download_data(source: str, destination: str, remove_source: bool = True) -> 
         remove_source (bool): Whether to remove the source after downloading and extracting.
 
     Returns:
-        pathlib.Path to downloaded data.
+        pathlib.Path: Path to downloaded data.
 
-    Example usage:
-        download_data(source="https://github.com/mrdbourke/pytorch-deep-learning/raw/main/data/pizza_steak_sushi.zip",
-                      destination="pizza_steak_sushi")
+    Examples::
+
+        download_data(
+            source="https://github.com/mrdbourke/pytorch-deep-learning/raw/main/data/pizza_steak_sushi.zip",
+            destination="pizza_steak_sushi"
+        )
     """
     # Setup path to data folder
     data_path = Path("data/")
