@@ -13,7 +13,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import requests
 import torch
-from torch import nn
 
 
 def walk_through_dir(dir_path):
@@ -184,8 +183,8 @@ def pred_and_plot_image(
     Args:
         model (torch.nn.Module): Trained PyTorch image classification model.
         image_path (str): Filepath to target image.
-        class_names (List[str], optional): Different class names for target image. Defaults to None.
-        transform (_type_, optional): Transform of target image. Defaults to None.
+        class_names (list[str], optional): Different class names for target image. Defaults to None.
+        transform (type, optional): Transform of target image. Defaults to None.
         device (torch.device, optional): Target device to compute on. Defaults to "cuda" if torch.cuda.is_available() else "cpu".
 
     Examples::
